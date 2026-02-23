@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>RZAutoAssort</AssemblyName>
+    <RootNamespace>RZAutoAssort</RootNamespace>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <SptModOutputPath>D:\Games\SPT_4_0_11\SPT\user\mods\RZAutoAssort\</SptModOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.*" />
+    <PackageReference Include="SPTarkov.DI" Version="4.0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config\userConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyModToServer" AfterTargets="Build" Condition="'$(SptModOutputPath)' != ''">
+    <Message Text="→ Copying to $(SptModOutputPath)" Importance="High" />
+    <MakeDir Directories="$(SptModOutputPath)" />
+    <MakeDir Directories="$(SptModOutputPath)config\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SptModOutputPath)" SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="$(ProjectDir)config\userConfig.json"
+      DestinationFolder="$(SptModOutputPath)config\"
+      SkipUnchangedFiles="true"
+      Condition="Exists('$(ProjectDir)config\userConfig.json')"
+    />
+  </Target>
+</Project>

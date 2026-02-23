@@ -1,0 +1,362 @@
+{
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  // GLOBAL SETTINGS
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  // Clear all vanilla assorts. Disable if you want to add offers on top of existing ones.
+  "ClearDefaultAssorts": true,
+
+  // Master switch for automatic handbook → trader routing.
+  "EnableAutoRouting": true,
+
+  // Route every handbook item ignoring blacklists and disabled routes. Only applies when EnableAutoRouting is true.
+  "ForceRouteAll": false,
+
+  // Route ONLY items added by mods. Vanilla items are ignored entirely. Only applies when EnableAutoRouting is true.
+  "RouteModdedItemsOnly": false,
+
+  // Exclude items added by mods from routing. Only vanilla items are routed. Only applies when EnableAutoRouting is true.
+  "RouteVanillaItemsOnly": false,
+
+  // Enable overrides.
+  "EnableOverrides": true,
+
+  // Enable manual offers.
+  "EnableManualOffers": true,
+
+  // Apply the StaticBlacklist below.
+  "UseStaticBlacklist": true,
+
+  // Apply the UserBlacklist below.
+  "UseUserBlacklist": true,
+
+  // Mark all items as examined/identified on all profile templates.
+  "AllItemsExamined": true,
+
+  // Unlock all traders.
+  "UnlockAllTraders": true,
+
+  // Trader to send unrouted items to when ForceGenerateAll is true.
+  "FallbackTrader": "Arena",
+
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  // BLACKLISTS
+  // Only affect auto-routing. Blacklisted items are never auto-routed to any trader.
+  // Manual offers and overrides are NOT affected — you can still manually sell a blacklisted item.
+  // Default vanilla assorts are also NOT affected if ClearDefaultAssorts is false.
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  // STATIC BLACKLIST
+  // Items that are broken, invisible, or non-functional in-game.
+  //
+  // ⚠ These items are:
+  //   - NEVER sold at any trader.
+  //   - NEVER added to the encyclopedia (not identified on the profile), even when AllItemsExamined is true.
+  //
+  // Do not put items here just because you don't want them sold — use UserBlacklist for that.
+  "StaticBlacklist": [
+    "5943d9c186f7745a13413ac9", // Shrapnel
+    "5996f6d686f77467977ba6cc", // MON-50 Shrapnel
+    "5996f6fc86f7745e585b4de3", // M67 Shrapnel
+    "5996f6cb86f774678763a6ca", // RGD-5 Shrapnel
+    "67654a6759116d347b0bfb86", // V40 Shrapnel
+    "5751961824597720a31c09ac", // (off)Black Keycard
+    "5ae083b25acfc4001a5fc702", // Master Hand
+    "5ae089fb5acfc408fb13989b", // Trophy
+    "55d617094bdc2d89028b4568", // KAC QDC 6.5x35 sound suppressor
+    "5648b62b4bdc2d9d488b4585", // GP-34 40mm underbarrel grenade launcher
+    "62811d61578c54356d6d67ea", // !!!DO_NOT_USE!!!AI AXMC 7.62x51mm bolt assembly
+    "679ba90d269ddfea47012159", // Chained Labrys
+    "63a8970d7108f713591149f5", // Small Christmas gift
+    "63a898a328e385334e0640a5", // Christmas gift
+    "63a897c6b1ff6e29734fcc95", // Large Christmas gift
+    "634959225289190e5e773b3b", // Pumpkin with sweets
+    "678fa929819ddc4c350c0317", // Valve handwheel
+    "67ab3d4b83869afd170fdd3f"  // BBQ-S43 gas torch
+  ],
+
+  // USER BLACKLIST
+  // Items you want to hide from traders for gameplay or balance reasons.
+  //
+  // ⚠ These items are:
+  //   - NEVER sold at any trader
+  //   - Still added to the encyclopedia (identified on the profile) when AllItemsExamined is true
+  //
+  // Use StaticBlacklist instead for items that are genuinely broken.
+  "UserBlacklist": [
+    "5449016a4bdc2d6f028b456f", // Rouble
+    "5696686a4bdc2da3298b456a", // Dollar
+    "569668774bdc2da2298b4568", // Euro
+    "6087e570b998180e9f76dc24", // Superfors DB 2020 Dead Blow Hammer
+    "63495c500c297e20065a08b1"  // Old hand scythe
+  ],
+
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  // AUTOMATIC HANDBOOK → TRADER ROUTING
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  "CategoryRoutes": [
+
+    // PRAPOR
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Rounds
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b33b", "TraderName": "Prapor", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Ammo packs
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b33c", "TraderName": "Prapor", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Magazines
+    { "Enabled": true, "CategoryId": "5b5f754a86f774094242f19b", "TraderName": "Prapor", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Throwables
+    { "Enabled": true, "CategoryId": "5b5f7a2386f774093f2ed3c4", "TraderName": "Prapor", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+
+    // THERAPIST
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Medkits
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b338", "TraderName": "Therapist", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Injury treatment
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b339", "TraderName": "Therapist", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Injectors
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b33a", "TraderName": "Therapist", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Pills
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b337", "TraderName": "Therapist", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Drinks
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b335", "TraderName": "Therapist", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Food
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b336", "TraderName": "Therapist", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Medical supplies
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2f3", "TraderName": "Therapist", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+
+    // PEACEKEEPER
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Pistols
+    { "Enabled": true, "CategoryId": "5b5f792486f77447ed5636b3", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Assault carbines
+    { "Enabled": true, "CategoryId": "5b5f78e986f77447ed5636b1", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Assault rifles
+    { "Enabled": true, "CategoryId": "5b5f78fc86f77409407a7f90", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Marksman rifles
+    { "Enabled": true, "CategoryId": "5b5f791486f774093f2ed3be", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Shotguns
+    { "Enabled": true, "CategoryId": "5b5f794b86f77409407a7f92", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Submachine guns
+    { "Enabled": true, "CategoryId": "5b5f796a86f774093f2ed3c0", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Bolt-action rifles
+    { "Enabled": true, "CategoryId": "5b5f798886f77447ed5636b5", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Machine guns
+    { "Enabled": true, "CategoryId": "5b5f79a486f77409407a7f94", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Grenade launchers
+    { "Enabled": true, "CategoryId": "5b5f79d186f774093f2ed3c2", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Special weapons
+    { "Enabled": true, "CategoryId": "5b5f79eb86f77447ed5636b7", "TraderName": "Peacekeeper", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+
+    // SKIER
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Money
+    { "Enabled": true, "CategoryId": "5b5f78b786f77447ed5636af", "TraderName": "Skier", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Keys
+    { "Enabled": true, "CategoryId": "5b47574386f77428ca22b342", "TraderName": "Skier", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Maps
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b343", "TraderName": "Skier", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+
+    // MECHANIC
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Weapon parts & mods
+    { "Enabled": true,  "CategoryId": "5b5f71a686f77447ed5636ab", "TraderName": "Mechanic", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Functional mods
+    { "Enabled": true,  "CategoryId": "5b5f71b386f774093f2ecf11", "TraderName": "Mechanic", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+
+    // RAGMAN
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Body armors
+    { "Enabled": true,  "CategoryId": "5b5f701386f774093f2ecf0f", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Tactical rigs
+    { "Enabled": true,  "CategoryId": "5b5f6f8786f77447ed563642", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Backpacks
+    { "Enabled": true,  "CategoryId": "5b5f6f6c86f774093f2ecf0b", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Headsets
+    { "Enabled": true,  "CategoryId": "5b5f6f3c86f774094242ef87", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Gear components
+    { "Enabled": true,  "CategoryId": "5b5f704686f77447ec5d76d7", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Facecovers
+    { "Enabled": true,  "CategoryId": "5b47574386f77428ca22b32f", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Headgear
+    { "Enabled": true,  "CategoryId": "5b47574386f77428ca22b330", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Eyewear
+    { "Enabled": true,  "CategoryId": "5b47574386f77428ca22b331", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Special equipment
+    { "Enabled": true,  "CategoryId": "5b47574386f77428ca22b345", "TraderName": "Ragman", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+
+    // JAEGER
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Melee weapons
+    { "Enabled": true,  "CategoryId": "5b5f7a0886f77409407a7f96", "TraderName": "Jaeger", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Storage containers
+    { "Enabled": true,  "CategoryId": "5b5f6fa186f77409407a7eb7", "TraderName": "Jaeger", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Secure containers
+    { "Enabled": false,  "CategoryId": "5b5f6fd286f774093f2ecf0d", "TraderName": "Jaeger", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+
+    // REF
+    // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    // Info items
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b341", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Barter items
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b33e", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Energy elements
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2ed", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Electronics
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2ef", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Building materials
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2ee", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Household materials
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2f0", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Flammable materials
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2f2", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Valuables
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2f1", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Tools
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2f6", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 },
+    // Others
+    { "Enabled": false, "CategoryId": "5b47574386f77428ca22b2f4", "TraderName": "Arena", "PriceMultiplier": 1.0, "LoyaltyLevel": 1 }
+  ],
+
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  // PER-TPL OVERRIDES
+  // Take precedence over auto-routing for specific items.
+  // TraderName = "" → blacklists this item without touching UserBlacklist.
+  // PriceRoubles = 0 → uses handbook price * PriceMultiplier.
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  "Overrides": [
+     {
+       "ItemTpl": "5c0126f40db834002a125382",
+       "TraderName": "Jaeger",
+       "PriceRoubles": 0,
+       "PriceMultiplier": 1.0,
+       "LoyaltyLevel": 1,
+       "StackCount": -1,
+       "BarterItems": [ { "ItemTpl": "5c13cef886f774072e618e82", "Count": 1 } ]
+     }
+  ],
+
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  // MANUAL OFFERS
+  // Always injected on top of auto-routing.
+  // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  "ManualOffers": [
+    {
+      // PRAPOR
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "54cb50c76803fa8b248b4571",
+      "Offers": []
+    },
+    {
+      // THERAPIST
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "54cb57776803fa99248b456e",
+      "Offers": []
+    },
+    {
+      // PEACEKEEPER
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "5935c25fb3acc3127c3d8cd9",
+      "Offers": []
+    },
+    {
+      // SKIER
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "58330581ace78e27b8b10cee",
+      "Offers": []
+    },
+    {
+      // MECHANIC
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "5a7c2eca46aef81a7ca2145d",
+      "Offers": []
+    },
+    {
+      // RAGMAN
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "5ac3b934156ae10c4430e83c",
+      "Offers": []
+    },
+    {
+      // JAEGER
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "5c0647fdd443bc2504c2d371",
+      "Offers": [
+        {
+          // Secure Container Alpha -> 250k
+          "ItemTpl": "544a11ac4bdc2d470e8b456a",
+          "StackCount": -1,
+          "LoyaltyLevel": 1,
+          "Durability": 100,
+          "PriceRoubles": 25000,
+          "Children": [],
+          "BarterItems": []
+        },
+        {
+          // Secure Container Beta -> 50k + SC Alpha
+          "ItemTpl": "5857a8b324597729ab0a0e7d",
+          "StackCount": 1,
+          "LoyaltyLevel": 2,
+          "Durability": 100,
+          "PriceRoubles": 50000,
+          "Children": [],
+          "BarterItems": [
+            { "ItemTpl": "544a11ac4bdc2d470e8b456a", "Count": 1 }
+          ]
+        },
+        {
+          // Secure Container Gamma -> 100k + SC Beta
+          "ItemTpl": "5857a8bc2459772bad15db29",
+          "StackCount": 1,
+          "LoyaltyLevel": 2,
+          "Durability": 100,
+          "PriceRoubles": 100000,
+          "Children": [],
+          "BarterItems": [
+            { "ItemTpl": "5857a8b324597729ab0a0e7d", "Count": 1 }
+          ]
+        },
+        {
+          // Secure Container Epsilon -> 200k + SC Gamma
+          "ItemTpl": "59db794186f77448bc595262",
+          "StackCount": 1,
+          "LoyaltyLevel": 2,
+          "Durability": 100,
+          "PriceRoubles": 200000,
+          "Children": [],
+          "BarterItems": [
+            { "ItemTpl": "5857a8bc2459772bad15db29", "Count": 1 }
+          ]
+        },
+        {
+          // Secure Container Kappa -> 500k + SC Epsilon
+          "ItemTpl": "5c093ca986f7740a1867ab12",
+          "StackCount": 1,
+          "LoyaltyLevel": 2,
+          "Durability": 100,
+          "PriceRoubles": 500000,
+          "Children": [],
+          "BarterItems": [
+            { "ItemTpl": "59db794186f77448bc595262", "Count": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      // REF
+      // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+      "Id": "6617beeaa9cfa777ca915b7c",
+      "Offers": []
+    }
+  ]
+}
