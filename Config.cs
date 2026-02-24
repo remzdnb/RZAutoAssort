@@ -90,6 +90,25 @@ public class AutoTradeOverride
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Trader sell config
+// ─────────────────────────────────────────────────────────────────────────────
+
+public enum ItemSellMode
+{
+    Default,
+    Disabled,
+    Categories,
+    AllWithBlacklist,
+}
+
+public class TraderSellConfig
+{
+    public ItemSellMode Mode { get; set; } = ItemSellMode.Disabled;
+    public List<string> Categories { get; set; } = new();
+    public List<string> Blacklist { get; set; } = new();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Config
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -109,16 +128,14 @@ public class AutoAssortConfig
     public bool AllItemsExamined { get; set; } = false;
     public bool UnlockAllTraders { get; set; } = false;
     public string? FallbackTrader { get; set; } = null;
+    public bool EnableSellConfigs { get; set; } = true;
+    public bool EnableDevMode { get; set; } = false;
 
-    // Items that are broken, invisible, or non-functional in-game.
-    // These are never sold at any trader AND never added to the encyclopedia (not identified on profile).
     public List<string> StaticBlacklist { get; set; } = new();
-
-    // Items you want to hide from traders.
-    // These are never sold at any trader, but ARE still added to the encyclopedia (identified on profile).
     public List<string> UserBlacklist { get; set; } = new();
 
     public List<ManualTraderOffers> ManualOffers { get; set; } = new();
     public List<CategoryRoute> CategoryRoutes { get; set; } = new();
     public List<AutoTradeOverride> Overrides { get; set; } = new();
+    public Dictionary<string, TraderSellConfig> TraderSellConfigs { get; set; } = new();
 }

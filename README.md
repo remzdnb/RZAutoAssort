@@ -2,19 +2,8 @@ RZAutoAssort was built to make trader assort customization easier — adding ite
 
 This mod approaches the problem from two angles, which can be used together or independently depending on what you need.
 
----
 
-## ⚠️ Default Configuration Warning
-
-Out of the box, the config ships with `EnableAutoRouting: true` and `ForceRouteAll: true` — this is intentional as a demo mode that routes every single item in the handbook to a trader so you can immediately see what the mod does. This is not meant for a real playthrough.
-
-For a more playable setup:
-
-- Set `ForceRouteAll` to `false` — only configured category routes will be used
-- Set `EnableOverrides` to `true` — your custom per-item overrides will apply
-- Set `EnableManualOffers` to `true` — your manually defined trades will be injected
-
-From there you can tweak `CategoryRoutes`, `Overrides`, and `ManualOffers` to your liking.
+> ⚠️ The default config shipped with each release is tuned for my own economy overhaul project and will not necessarily produce a balanced or playable experience on its own. It is intended as a reference and starting point, not a finished setup.
 
 ---
 
@@ -58,12 +47,35 @@ Each offer supports:
 Manual offers are always injected regardless of `ForceRouteAll`, blacklists, or any other routing setting. They're processed first, before auto-routing runs.
 
 This makes manual offers the right tool for anything that doesn't fit cleanly into category routing: a barter trade for a specific case, a weapon preset sold at a specific trader at a specific loyalty level, an item that belongs to multiple categories and needs special handling.
-
+****
 ---
+
+## 🏪 Feature 3 - Trader Sell Configuration (added in 1.0.1)
+
+By default, SPT assigns each trader a fixed list of item categories they will buy from the player.
+RZAutoAssort replaces this system with a fully configurable per-trader sell policy.
+
+Each trader can be set to one of three modes:
+
+- **Default** — leaves the trader's vanilla sell config untouched.
+- **Disabled** — the trader will not buy anything from the player.
+- **Categories** — the trader only buys items belonging to the specified handbook category IDs.
+- **AllWithBlacklist** — the trader buys all handbook items except those explicitly listed in the blacklist.
+
+This is configured per trader in `userConfig.json` under `TraderSellConfigs`, keyed by trader name.
 
 ## ⚙️ Configuration Reference
 
 The full config is in `config/userConfig.json`.
+
+> ⚠️ Out of the box, the config ships with `EnableAutoRouting: true` and `ForceRouteAll: true` — this is intentional as a demo mode that routes every single item in the handbook to a trader so you can immediately see what the mod does. This is not meant for a real playthrough.
+>
+> For a more playable setup:
+> - Set `ForceRouteAll` to `false` — only configured category routes will be used
+> - Set `EnableOverrides` to `true` — your custom per-item overrides will apply
+> - Set `EnableManualOffers` to `true` — your manually defined trades will be injected
+>
+> From there you can tweak `CategoryRoutes`, `Overrides`, and `ManualOffers` to your liking.
 
 ### Global flags
 
@@ -73,7 +85,7 @@ Clears all vanilla trader assorts before injecting custom ones. Set to `false` t
 **`EnableAutoRouting`** *(default: true)*
 Master switch for automatic handbook → trader routing.
 
-**`ForceRouteAll`** *(default: false)*
+**`ForceRouteAll`** *(default: true)*
 Routes every handbook item ignoring blacklists and disabled routes. Only applies when `EnableAutoRouting` is true. Useful to find items not showing up anywhere.
 
 **`RouteModdedItemsOnly`** *(default: false)*
@@ -82,20 +94,26 @@ Only routes items not present in `vanilla_handbook.json`. Mutually exclusive wit
 **`RouteVanillaItemsOnly`** *(default: false)*
 Only routes items present in `vanilla_handbook.json`. Mutually exclusive with `RouteModdedItemsOnly`.
 
-**`EnableOverrides`** *(default: true)*
+**`EnableOverrides`** *(default: false)*
 Enables per-TPL overrides defined in `Overrides`.
 
-**`EnableManualOffers`** *(default: true)*
+**`EnableManualOffers`** *(default: false)*
 Enables manual offers defined in `ManualOffers`.
 
-**`AllItemsExamined`** *(default: false)*
+**`AllItemsExamined`** *(default: true)*
 Marks every item as examined on all profile templates.
 
-**`UnlockAllTraders`** *(default: false)*
+**`UnlockAllTraders`** *(default: true)*
 Sets all traders as unlocked by default on all profile templates.
 
-**`FallbackTrader`** *(default: null)*
+**`FallbackTrader`** *(default: Arena)*
 When `ForceRouteAll` is true, items with no matching category route are sent here.
+
+**`EnableSellConfigs`** *(default: false)*
+Master switch for trader sell config overrides. Set to `false` to ignore all `TraderSellConfigs` entries.
+
+**`DevMode`** *(default: false)*
+Forces all assort prices to 1 rouble, ignoring all price config. Applies to auto-routed items, overrides, and manual offers. Useful for testing without worrying about economy balance.
 
 ### Blacklists
 
@@ -150,6 +168,32 @@ Offers are grouped by trader ID. Each offer supports rouble price, barter items,
       "Children": [],
       "BarterItems": []
     }
+  ]
+}
+```
+
+### TraderSellConfigs
+
+Controls what each trader will buy from the player. Keyed by trader name (e.g. `"Fence"`, `"Therapist"`).
+
+Each entry supports the following fields:
+
+**`Mode`** *(default: Default)*
+- `Default` — leaves the trader's vanilla sell config untouched.
+- `Disabled` — the trader buys nothing from the player.
+- `Categories` — the trader buys items belonging to the category IDs listed in `Categories`.
+- `AllWithBlacklist` — the trader buys all handbook items except those listed in `Blacklist`.
+
+**`Categories`**
+List of handbook category IDs. Only used when `Mode` is `Categories`.
+
+**`Blacklist`**
+List of item TPLs the trader will refuse to buy. Only used when `Mode` is `AllWithBlacklist`.
+```json
+"Fence": {
+  "Mode": "AllWithBlacklist",
+  "Blacklist": [
+    "59faff1d86f7746c51718c9c" // Physical bitcoin
   ]
 }
 ```

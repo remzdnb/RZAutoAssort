@@ -1,5 +1,6 @@
 // RemzDNB - 2026
 // ReSharper disable InvertIf
+// ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 
 using Microsoft.Extensions.Logging;
 using SPTarkov.DI.Annotations;
@@ -14,14 +15,15 @@ namespace RZAutoAssort;
 [Injectable(TypePriority = OnLoadOrder.RagfairCallbacks - 1)]
 public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService databaseService, ConfigLoader configLoader) : IOnLoad
 {
+    private AutoAssortConfig _config = null!;
     private Dictionary<MongoId, TemplateItem>? _itemTemplates;
 
     public Task OnLoad()
     {
+        _config = configLoader.Load<AutoAssortConfig>(AutoAssortConfig.FileName);
         _itemTemplates = databaseService.GetTables().Templates?.Items;
 
         var traders = databaseService.GetTraders();
-        var config = configLoader.Load<AutoAssortConfig>(AutoAssortConfig.FileName);
         var handbook = databaseService.GetTables().Templates?.Handbook;
 
         if (handbook is null || _itemTemplates is null)
@@ -33,7 +35,7 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
         // 1. Reset all assorts.
         // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-        if (config.ClearDefaultAssorts)
+        if (_config.ClearDefaultAssorts)
         {
             foreach (var (id, trader) in traders)
             {
@@ -55,9 +57,9 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
         // 2. Manual offers (always injected, regardless of ForceGenerateAll).
         // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-        if (config.EnableManualOffers)
+        if (_config.EnableManualOffers)
         {
-            var manualById = config.ManualOffers.ToDictionary(t => t.Id, StringComparer.OrdinalIgnoreCase);
+            var manualById = _config.ManualOffers.ToDictionary(t => t.Id, StringComparer.OrdinalIgnoreCase);
             foreach (var (id, trader) in traders)
             {
                 if (manualById.TryGetValue(id.ToString(), out var manualOffers))
@@ -71,34 +73,34 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
         // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
         var blacklist = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (!config.ForceRouteAll)
+        if (!_config.ForceRouteAll)
         {
-            if (config.UseStaticBlacklist)
+            if (_config.UseStaticBlacklist)
             {
-                blacklist.UnionWith(config.StaticBlacklist); // was: StaticBlacklist.Tpls
+                blacklist.UnionWith(_config.StaticBlacklist); // was: StaticBlacklist.Tpls
             }
 
-            if (config.UseUserBlacklist)
+            if (_config.UseUserBlacklist)
             {
-                blacklist.UnionWith(config.UserBlacklist);
+                blacklist.UnionWith(_config.UserBlacklist);
             }
         }
 
         // 4. Build modded item set (diff between runtime handbook and vanilla_handbook.json).
         // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-        if (config.RouteModdedItemsOnly && config.RouteVanillaItemsOnly)
+        if (_config.RouteModdedItemsOnly && _config.RouteVanillaItemsOnly)
         {
             logger.LogWarning(
                 "[RZAutoAssort] RouteModdedItemsOnly and ExcludeModdedItems are both true — "
                     + "these options are mutually exclusive. Both will be ignored and all items will be routed normally."
             );
-            config.RouteModdedItemsOnly = false;
-            config.RouteVanillaItemsOnly = false;
+            _config.RouteModdedItemsOnly = false;
+            _config.RouteVanillaItemsOnly = false;
         }
 
         HashSet<string>? moddedTpls = null;
-        if (config.RouteModdedItemsOnly || config.RouteVanillaItemsOnly)
+        if (_config.RouteModdedItemsOnly || _config.RouteVanillaItemsOnly)
         {
             moddedTpls = BuildModdedItemSet(handbook);
             logger.LogInformation("[RZAutoAssort] Detected {Count} modded item(s) via vanilla_handbook.json diff.", moddedTpls.Count);
@@ -107,10 +109,10 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
         // 5. Build category route map. In ForceGenerateAll mode, disabled routes are included anyway.
         // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-        var activeRoutes = config.ForceRouteAll ? config.CategoryRoutes : config.CategoryRoutes.Where(r => r.Enabled).ToList();
+        var activeRoutes = _config.ForceRouteAll ? _config.CategoryRoutes : _config.CategoryRoutes.Where(r => r.Enabled).ToList();
 
         var categoryToRoute = BuildCategoryRouteMap(handbook.Categories, activeRoutes);
-        var overrides = config.Overrides.ToDictionary(o => o.ItemTpl, StringComparer.OrdinalIgnoreCase);
+        var overrides = _config.Overrides.ToDictionary(o => o.ItemTpl, StringComparer.OrdinalIgnoreCase);
 
         int routed = 0,
             overridden = 0,
@@ -119,7 +121,7 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
         // 6. Automatic handbook → trader routing.
         // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-        if (config.EnableAutoRouting)
+        if (_config.EnableAutoRouting)
         {
             foreach (var hbItem in handbook.Items)
             {
@@ -136,7 +138,7 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
                 if (moddedTpls is not null)
                 {
                     var isModded = moddedTpls.Contains(itemTpl);
-                    if (config.RouteModdedItemsOnly && !isModded || config.RouteVanillaItemsOnly && isModded)
+                    if (_config.RouteModdedItemsOnly && !isModded || _config.RouteVanillaItemsOnly && isModded)
                     {
                         skipped++;
                         continue;
@@ -145,7 +147,7 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
 
                 // Override.
 
-                if (config.EnableOverrides && overrides.TryGetValue(itemTpl, out var ov))
+                if (_config.EnableOverrides && overrides.TryGetValue(itemTpl, out var ov))
                 {
                     if (string.IsNullOrEmpty(ov.TraderName))
                     {
@@ -172,9 +174,9 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
 
                 if (!categoryToRoute.TryGetValue(hbItem.ParentId, out var route))
                 {
-                    if (config.ForceRouteAll && config.FallbackTrader is not null)
+                    if (_config.ForceRouteAll && _config.FallbackTrader is not null)
                     {
-                        var fallbackId = TraderIds.FromName(config.FallbackTrader);
+                        var fallbackId = TraderIds.FromName(_config.FallbackTrader);
                         if (fallbackId is not null && traders.TryGetValue(fallbackId, out var fallbackTrader))
                         {
                             var fallbackPrice = Math.Max(1, (int)Math.Round(hbItem.Price ?? 0));
@@ -207,7 +209,7 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
                 routed,
                 overridden,
                 skipped,
-                config.ForceRouteAll ? " [ForceRouteAll ON]" : ""
+                _config.ForceRouteAll ? " [ForceRouteAll ON]" : ""
             );
         }
 
@@ -507,15 +509,24 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
     // Helpers
     // ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
-    private static List<BarterScheme> BuildPayment(int priceRoubles, List<BarterItem> barterItems)
+    private List<BarterScheme> BuildPayment(int priceRoubles, List<BarterItem> barterItems)
     {
+        if (_config.EnableDevMode)
+        {
+            return [new BarterScheme { Template = ItemTpl.MONEY_ROUBLES, Count = 1 }];
+        }
+
         var payment = new List<BarterScheme>();
 
         if (priceRoubles > 0)
+        {
             payment.Add(new BarterScheme { Template = ItemTpl.MONEY_ROUBLES, Count = priceRoubles });
+        }
 
         foreach (var b in barterItems)
+        {
             payment.Add(new BarterScheme { Template = b.ItemTpl, Count = b.Count });
+        }
 
         return payment.Count > 0
             ? payment
