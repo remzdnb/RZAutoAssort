@@ -7,7 +7,8 @@
     <AssemblyName>RZAutoAssort</AssemblyName>
     <RootNamespace>RZAutoAssort</RootNamespace>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-    <SptModOutputPath>D:\Games\SPT_4_0_11\SPT\user\mods\RZAutoAssort\</SptModOutputPath>
+    <ModExportPath>D:\Games\SPT_4_0_11\SPT\user\mods\RZAutoAssort\</ModExportPath>
+    <SourceExportPath>D:\SPT\PublicRepositories\RZAutoAssort</SourceExportPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,16 +22,27 @@
     </None>
   </ItemGroup>
 
-  <Target Name="CopyModToServer" AfterTargets="Build" Condition="'$(SptModOutputPath)' != ''">
-    <Message Text="→ Copying to $(SptModOutputPath)" Importance="High" />
-    <MakeDir Directories="$(SptModOutputPath)" />
-    <MakeDir Directories="$(SptModOutputPath)config\" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(SptModOutputPath)" SkipUnchangedFiles="true" />
+  <Target Name="ExportMod" AfterTargets="Build" Condition="'$(ModExportPath)' != ''">
+    <Message Text="→ Copying to $(ModExportPath)" Importance="High" />
+    <MakeDir Directories="$(ModExportPath)" />
+    <MakeDir Directories="$(ModExportPath)config\" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(ModExportPath)" SkipUnchangedFiles="true" />
     <Copy
       SourceFiles="$(ProjectDir)config\userConfig.json"
-      DestinationFolder="$(SptModOutputPath)config\"
+      DestinationFolder="$(ModExportPath)config\"
       SkipUnchangedFiles="true"
       Condition="Exists('$(ProjectDir)config\userConfig.json')"
     />
+	    <Message Text="→ Mod exported." Importance="High" />
   </Target>
+
+  <Target Name="ExportSources" AfterTargets="Build" Condition="'$(SourceExportPath)' != ''">
+    <Message Text="→ Exporting sources to $(SourceExportPath)" Importance="High" />
+    <Exec
+      Command="robocopy &quot;$(ProjectDir.TrimEnd('\'))&quot; &quot;$(SourceExportPath.TrimEnd('\'))&quot; /E /XD config bin obj .idea /XF *.user /NFL /NDL /NJH /NJS /NC /NS &amp;&amp; exit 0 || if %ERRORLEVEL% LEQ 7 (exit 0) else (exit %ERRORLEVEL%)"
+      IgnoreExitCode="true"
+    />
+    <Message Text="→ Sources exported." Importance="High" />
+  </Target>
+
 </Project>

@@ -6,11 +6,11 @@ This mod approaches the problem from two angles, which can be used together or i
 
 ## ⚠️ Default Configuration Warning
 
-Out of the box, the config ships with `EnableAutoRouting: true` and `RouteAll: true` — this is intentional as a demo mode that routes every single item in the handbook to a trader so you can immediately see what the mod does. This is not meant for a real playthrough.
+Out of the box, the config ships with `EnableAutoRouting: true` and `ForceRouteAll: true` — this is intentional as a demo mode that routes every single item in the handbook to a trader so you can immediately see what the mod does. This is not meant for a real playthrough.
 
 For a more playable setup:
 
-- Set `RouteAll` to `false` — only configured category routes will be used
+- Set `ForceRouteAll` to `false` — only configured category routes will be used
 - Set `EnableOverrides` to `true` — your custom per-item overrides will apply
 - Set `EnableManualOffers` to `true` — your manually defined trades will be injected
 
@@ -28,7 +28,7 @@ The routing system follows the handbook's category hierarchy, so if you define a
 
 **For exploring modded content.** If you're running mods that add new items to the game and want to actually find and buy them without hunting through traders or the flea market, `RouteModdedItemsOnly` is for you. The mod detects which items weren't present in the vanilla handbook and routes only those to traders — every item added by every mod you have installed shows up at a trader immediately, at handbook price, ready to use.
 
-**For visibility.** `RouteAll` bypasses all filters and blacklists and routes literally every item in the handbook, including items that are normally hidden or uncategorized. Useful when you're trying to find an item that isn't appearing anywhere and you need to figure out why. Combined with `AllItemsExamined` (which marks every item as identified on your profile), nothing is hidden.
+**For visibility.** `ForceRouteAll` bypasses all filters and blacklists and routes literally every item in the handbook, including items that are normally hidden or uncategorized. Useful when you're trying to find an item that isn't appearing anywhere and you need to figure out why. Combined with `AllItemsExamined` (which marks every item as identified on your profile), nothing is hidden.
 
 **For total economy overhauls.** The routing system is the backbone of any trader customization. Instead of hand-editing dozens of assort JSON files and keeping them in sync with every SPT update, you maintain a single config file that describes the intent — "pistols go to Peacekeeper at loyalty level 1 at handbook price" — and the mod handles the rest.
 
@@ -55,7 +55,7 @@ Each offer supports:
 - **Manual children** — explicitly define attachments or mods on a weapon
 - **Auto-resolved children** — for items with required slots (armor plates, etc.), the mod automatically injects the correct child items by reading the item's template from the database, recursively. You don't have to worry about a armor vest being invalid because it's missing its plate carrier slot.
 
-Manual offers are always injected regardless of `RouteAll`, blacklists, or any other routing setting. They're processed first, before auto-routing runs.
+Manual offers are always injected regardless of `ForceRouteAll`, blacklists, or any other routing setting. They're processed first, before auto-routing runs.
 
 This makes manual offers the right tool for anything that doesn't fit cleanly into category routing: a barter trade for a specific case, a weapon preset sold at a specific trader at a specific loyalty level, an item that belongs to multiple categories and needs special handling.
 
@@ -63,32 +63,49 @@ This makes manual offers the right tool for anything that doesn't fit cleanly in
 
 ## ⚙️ Configuration Reference
 
-The full config is in `config/userConfig.json`. It supports comments and trailing commas.
+The full config is in `config/userConfig.json`.
 
 ### Global flags
 
-| Key | Default | Description |
-|---|---|---|
-| `ClearDefaultAssorts` | `true` | Clears all vanilla trader assorts before injecting custom ones. Set to `false` to add offers on top of existing ones. |
-| `EnableAutoRouting` | `true` | Master switch for automatic handbook → trader routing. |
-| `RouteAll` | `false` | Routes every handbook item ignoring blacklists and disabled routes. Only applies when `EnableAutoRouting` is true. Useful to find items not showing up anywhere. |
-| `RouteModdedItemsOnly` | `false` | Only routes items not present in `vanilla_handbook.json`. Mutually exclusive with `RouteVanillaItemsOnly`. |
-| `RouteVanillaItemsOnly` | `false` | Only routes items present in `vanilla_handbook.json`. Mutually exclusive with `RouteModdedItemsOnly`. |
-| `EnableOverrides` | `true` | Enables per-TPL overrides defined in `Overrides`. |
-| `EnableManualOffers` | `true` | Enables manual offers defined in `ManualOffers`. |
-| `AllItemsExamined` | `false` | Marks every item as examined on all profile templates. |
-| `UnlockAllTraders` | `false` | Sets all traders as unlocked by default on all profile templates. |
-| `FallbackTrader` | `null` | When `RouteAll` is true, items with no matching category route are sent here. |
+**`ClearDefaultAssorts`** *(default: true)*
+Clears all vanilla trader assorts before injecting custom ones. Set to `false` to add offers on top of existing ones.
+
+**`EnableAutoRouting`** *(default: true)*
+Master switch for automatic handbook → trader routing.
+
+**`ForceRouteAll`** *(default: false)*
+Routes every handbook item ignoring blacklists and disabled routes. Only applies when `EnableAutoRouting` is true. Useful to find items not showing up anywhere.
+
+**`RouteModdedItemsOnly`** *(default: false)*
+Only routes items not present in `vanilla_handbook.json`. Mutually exclusive with `RouteVanillaItemsOnly`.
+
+**`RouteVanillaItemsOnly`** *(default: false)*
+Only routes items present in `vanilla_handbook.json`. Mutually exclusive with `RouteModdedItemsOnly`.
+
+**`EnableOverrides`** *(default: true)*
+Enables per-TPL overrides defined in `Overrides`.
+
+**`EnableManualOffers`** *(default: true)*
+Enables manual offers defined in `ManualOffers`.
+
+**`AllItemsExamined`** *(default: false)*
+Marks every item as examined on all profile templates.
+
+**`UnlockAllTraders`** *(default: false)*
+Sets all traders as unlocked by default on all profile templates.
+
+**`FallbackTrader`** *(default: null)*
+When `ForceRouteAll` is true, items with no matching category route are sent here.
 
 ### Blacklists
 
-> ⚠️ Blacklists only affect auto-routing. They do not affect manual offers, overrides, or vanilla assorts if `ClearDefaultAssorts` is false.
+> ⚠️ Blacklists only affect auto-routing. They do not affect manual offers, overrides, or vanilla assorts.
 
-| Key | Description |
-|---|---|
-| `UseStaticBlacklist` | Applies the hardcoded internal blacklist (broken items, shrapnel, decorations, etc.) |
-| `UseUserBlacklist` | Applies the `UserBlacklist` array below |
-| `UserBlacklist` | Array of TPLs to never auto-route |
+**`UseStaticBlacklist`**
+Applies the `StaticBlacklist` array — items that are broken, invisible, or non-functional in-game. These are also excluded from the encyclopedia even when `AllItemsExamined` is true.
+
+**`UseUserBlacklist`**
+Applies the `UserBlacklist` array — items you want to hide from traders for gameplay or balance reasons. Unlike the static blacklist, these are still added to the encyclopedia when `AllItemsExamined` is true.
 
 ### CategoryRoutes
 
@@ -100,7 +117,7 @@ Each entry maps a handbook category ID to a trader. Sub-categories inherit the p
 
 ### Overrides
 
-Per-TPL overrides take precedence over category routes. `PriceRoubles: 0` falls back to `handbook price * PriceMultiplier`. `TraderName: ""` blacklists the item without touching `UserBlacklist`.
+Per-TPL overrides take precedence over category routes.
 
 ```json
 {

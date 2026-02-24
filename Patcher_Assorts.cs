@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Utils;
 
 namespace RZAutoAssort;
 
@@ -277,7 +278,7 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
     {
         foreach (var (offer, index) in offers.Select((o, i) => (o, i)))
         {
-            var itemId = GenerateId($"manual_{offer.ItemTpl}_{index}");
+            var itemId = new MongoId();
 
             assort.Items.Add(
                 new Item
@@ -302,7 +303,8 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
             // Manual children defined in JSON
             foreach (var (child, childIndex) in offer.Children.Select((c, i) => (c, i)))
             {
-                var childId = GenerateId($"manual_{offer.ItemTpl}_{index}_child_{childIndex}");
+                var childId = new MongoId();
+                ;
                 assort.Items.Add(
                     new Item
                     {
@@ -338,7 +340,8 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
         int durability
     )
     {
-        var itemId = GenerateId($"auto_{tpl}");
+        var itemId = new MongoId();
+        ;
 
         assort.Items.Add(
             new Item
@@ -453,7 +456,8 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
             if (childTpl is null)
                 continue;
 
-            var childId = GenerateId($"{parentId}_{slot.Name}_{depth}");
+            var childId = new MongoId();
+            ;
 
             UpdRepairable? repairable = null;
             if (_itemTemplates.TryGetValue(childTpl.Value, out var childTemplate))
@@ -519,11 +523,5 @@ public class AssortsPatcher(ILogger<AssortsPatcher> logger, DatabaseService data
             {
                 new() { Template = ItemTpl.MONEY_ROUBLES, Count = 0 },
             };
-    }
-
-    private static MongoId GenerateId(string seed)
-    {
-        var hash = System.Security.Cryptography.MD5.HashData(System.Text.Encoding.UTF8.GetBytes(seed));
-        return Convert.ToHexString(hash).ToLower()[..24];
     }
 }
